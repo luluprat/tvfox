@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!-- <html manifest="xmltv.manifest"> -->
+
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="stylesheet" type="text/css" href="Style/xmltv.css">
+                <link rel="stylesheet" type="text/css"     href="Library/Dojo/dojox/gantt/resources/gantt.css"/>
+		<link rel="stylesheet" href="Library/Dojo/dojox/calendar/themes/iphone/Calendar.css">
+
+                <link rel="shortcut icon" type="image/png" href="favicon.png" />
+		<!-- configure and load dojo -->
+		<script 
+			src="Library/Dojo/dojo/dojo.js" 
+			data-dojo-config="
+			isDebug:1, 
+			async:1,
+			//mblUserAgent:'Custom',
+			packages: [
+				{
+				  name: 'storehouse',
+				  // We need to tell the dojo loader where Storehouse is.
+				  // As we get dojo from a CDN, this looks a little tricky.
+				  // When using a local version of dojo, we could use a relative
+				  // URL like this:
+				  location:  '../../../Js/storehouse'
+				  //location: location.pathname.replace(/\/[^/]+$/, '') + '../..'
+				}
+				]
+			">
+		</script>
+		
+		
+		<script src="Js/xmltv.js" ></script>
+		
+		<title>TnT</title>
+	</head>
+	<body>
+		
+
+
+		<div id="settings" data-dojo-type="dojox.mobile.View" data-dojo-props="selected: true">
+			<!--<h1 data-dojo-type="dojox.mobile.Heading" data-dojo-props='fixed:"top"'>
+			<img src="Style/logo-acad.jpg" style="height: 42px;float:left;">
+			
+			<span data-dojo-type="dojox/mobile/ToolBarButton"
+					data-dojo-props='label:"afficher",defaultColor:"mblColorTurquoise"'
+					style="float:right;"
+					onclick="drawProgram();"
+					></span>
+                       <span data-dojo-type="dojox/mobile/ToolBarButton"
+					data-dojo-props='label:"Gantt",defaultColor:"mblColorTurquoise"'
+					style="float:right;"
+					onclick="drawGantt();"
+					></span>
+			</h1>
+			<span data-dojo-type="dojox/mobile/ToolBarButton"
+					data-dojo-props='label:"Calendar",defaultColor:"mblColorTurquoise"'
+					style="float:right;"
+					onclick="drawCalendar();"
+					></span>
+			</h1>
+			<div  data-dojo-type="dojox.mobile.RoundRect" data-dojo-props='shadow:true'>
+				<form id="formNom" data-dojo-type="dijit.form.Form" action="">
+					<table style="width:100%">
+						<tr>
+							
+							<td style="text-align:left">
+								<input id="nom" name="nom" data-dojo-type="dojox.mobile.TextBox"   data-dojo-props ='selectOnClick:true,focused:true' placeHolder="Nom ou Prénom">
+							</td>
+							<td style="text-align:right">
+								<input name="submit" type="submit" class="mblOrangeButton" data-dojo-type="dojox.mobile.Button" value="Ok" >
+							</td>
+						</tr>
+						
+					</table>
+				</form>
+			</div>-->
+			<!--<div data-dojo-type="dojox.mobile.ContentPane" data-dojo-props='label:"External Content", href:"Remote/getList.php"'>-->
+			
+			<div id="resultList" data-dojo-type="dojox.mobile.ScrollableView" data-dojo-props='scrollBar:true'>
+				
+					<div id="chart"></div>
+				
+				
+			</div>
+				
+			<h1 data-dojo-type="dojox.mobile.Heading" data-dojo-props='fixed:"bottom"' >
+				<!--<img src="Style/logo_dsi.jpg" style="height: 42px;">
+				<span>© 2013 DSI - Tous droits réservés </span>-->
+				
+				<span id="offline" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"Offline",defaultColor:"mblColorTurquoise",toggle:"true"' onclick="offline();"></span>
+				<span  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"?",defaultColor:"mblColorTurquoise",toggle:"true"' onclick="dijit.byId('help').show()"></span>
+				<span data-dojo-type="dojox/mobile/ToolBarButton"
+					data-dojo-props='label:"Download",defaultColor:"mblColorTurquoise"'
+					style="float:right;"
+					onclick="install();"
+					></span>
+				
+			</h1>
+		</div>
+		
+		<div id="dialog" data-dojo-type="dojox/mobile/SimpleDialog" data-dojo-props='closeButton:true'>
+			<div data-dojo-type="dojox/mobile/RoundRect" data-dojo-props='shadow:true'>
+				<div id="progressBar" data-dojo-type="dojox/mobile/ProgressBar" data-dojo-props='value:"0"' ></div>
+			</div>
+			<!--<div data-dojo-type="dojox/mobile/Button" label="Fermer" class="mblColorTurquoise" style="width:45px;float:right;" onClick="dijit.byId('dialog').hide()"></div>-->
+		  
+		 
+		  
+		</div>
+		<!--<div id="help" data-dojo-type="dojox/mobile/SimpleDialog" data-dojo-props='closeButton:true'> 
+			<div data-dojo-type="dojox/mobile/RoundRect" data-dojo-props='shadow:true'>
+				<span> Pour installer l'application sur firefox os cliquez sur le bouton</span>
+				<span id="webapp" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"webapp",defaultColor:"mblColorTurquoise"'  style=""></span>
+  
+			</div>-->
+			<!--<div data-dojo-type="dojox/mobile/Button" label="Fermer" class="mblColorTurquoise" style="width:45px;float:right;" onClick="dijit.byId('help').hide()"></div>-->
+		  
+		 
+		  
+		</div>
+		
+	</div>
+
+	</body>
+</html>
+

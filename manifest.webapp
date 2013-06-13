@@ -1,0 +1,15 @@
+{
+  "name": "XmlTv",
+  "description": "Programme de la TNT",
+  "launch_path": "/demos/xmltv/index.html",
+  "icons": {
+    "128": "/demos/xmltv/Style/logo.png"
+  },
+  "developer": {
+    "name": "Rectorat de Creteil",
+    "url": "http://www.inkisitore.fr"
+  },
+  "installs_allowed_from": ["*"],
+  "default_locale": "fr",
+  "appcache_path": "/demos/xmltv/xmltv.manifest"
+}

@@ -1,0 +1,155 @@
+
+.contentList{
+
+	font-weight:normal;
+	font-size:85% !important;
+}
+a {
+	font-weight:normal;
+	text-decoration:none;
+	color:inherit;
+}
+.headList{
+
+	
+	
+}
+.titleList{
+ // color:#0B5199;
+	
+	
+}
+
+.mblHeading{
+	background-image:none !important;
+	background-color:white !important;
+	border: none !important;
+color: black !important;
+text-shadow:none !important;
+}
+.mblAccordionTitleSelected, .mblAccordionTitle {
+	background-image:none !important;
+	background-color:#63B9DA !important;
+	border-radius: 8px !important;
+	-webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2) !important;
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2) !important;
+	margin: 7px 9px 7px  !important;
+	padding: 8px  !important;
+	width:inherit !important;
+	height: 20px !important;
+}
+.mblRoundRect{
+	border : none !important;
+	margin: 7px 9px 2px  !important;
+	background-color: white !important;
+
+}
+.mblRoundRectList{
+	
+	background-color: white !important;
+
+}
+.mblBackground{
+	background-color:white !important;
+
+}
+
+.mblButton, .mblToolBarButtonBody{
+
+	border:none !important;
+}
+
+.mblBlueButton{
+
+	linear-gradient(to bottom, #63B9DA 0%, #048bf4 100%) !important;
+}
+
+.mblOrangeButton{
+	background: #FE9900 !important;
+	border-radius: 8px ;
+}
+
+.mblToolBarButtonBody{
+	border-radius: 8px !important;
+}
+
+.mblColorTurquoise{
+	background: #63B9DA;
+	border-radius: 8px ;
+}
+.mblSimpleDialog{
+
+border-radius: 8px !important;
+}
+.mblAccordion{
+	border: none !important;
+
+}
+.mblTextBox {
+	border-radius: 8px !important;
+	font-weight:bold !important;
+	border : 2px solid #63B9DA !important;
+	color:#FE9900  !important;
+	width:100% !important;
+	padding:10px !important;
+	font-size:125% !important;
+}
+.mblSimpleDialogDecoration{
+	background-color:#63B9DA  !important;
+    background-image:none !important;
+    color:black !important;
+}
+.mblDomButtonSilverCircleRedCross{
+	border : none !important;
+	border-radius : none !important;
+	-webkit-box-shadow:none !important;
+	box-shadow:none !important;
+	background:url(orange/067.png) no-repeat !important;
+	background-size:26px 26px !important;
+}
+.mblDomButtonSilverCircleRedCross > div, .mblDomButtonSilverCircleRedCross > div > div, .mblDomButtonSilverCircleRedCross > div > div > div {
+	background:none !important;
+}
+
+.mblAccordionTitleAnchor{
+	color : white !important;
+
+}
+.mblAccordionTitle{
+line-height: auto !important;
+}
+
+.mblColorDefaultSel{
+	border:none !important;
+}
+.mblRoundRect.mblShadow {
+-webkit-box-shadow: none !important;
+box-shadow: none !important;
+}
+.mblListItem{
+border-bottom: none !important;
+background-color: white !important;
+color:black !important;
+
+}
+
+
+
+.dojoxCalendarEvent.Calendar1 .bg {
+  background-color: #00AA00 !important;
+}
+.dojoxCalendarEvent.Calendar1.Hovered .bg {
+  background-color: #00FF00 !important;
+}
+.dojoxCalendarEvent.Calendar1.Selected .bg {
+  background-color: #004400 !important;
+}
+.dojoxCalendarEvent.Calendar2 .bg {
+  background-color: #0000AA !important;
+}
+.dojoxCalendarEvent.Calendar2.Hovered .bg {
+  background-color: #0000FF !important;
+}
+.dojoxCalendarEvent.Calendar2.Selected .bg {
+  background-color: #000044 !important;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!-- <html manifest="xmltv.manifest"> -->
+
+	<head>
+            <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="stylesheet" type="text/css" href="Style/tvfox.css">
+                <link rel="stylesheet" href="Library/Dojo/dojox/calendar/themes/iphone/Calendar.css">
+
+                <link rel="shortcut icon" type="image/png" href="favicon.png" />
+		<!-- configure and load dojo -->
+		<script 
+			src="Library/Dojo/dojo/dojo.js" 
+			data-dojo-config="
+			isDebug:1, 
+			async:1,
+			//mblUserAgent:'Custom',
+			packages: [
+				{
+				  name: 'storehouse',
+				  // We need to tell the dojo loader where Storehouse is.
+				  // As we get dojo from a CDN, this looks a little tricky.
+				  // When using a local version of dojo, we could use a relative
+				  // URL like this:
+				  location:  '../../../Js/storehouse'
+				  //location: location.pathname.replace(/\/[^/]+$/, '') + '../..'
+				}
+				]
+			">
+		</script>
+		
+		
+		<script src="Js/tvfox.js" ></script>
+		
+		<title>TvFox</title>
+	</head>
+	<body>
+		
+
+
+		
+			
+			<div id="resultList" data-dojo-type="dojox.mobile.ScrollableView" data-dojo-props='scrollBar:true'>
+				
+					<div id="chart"></div>
+				
+				
+			</div>
+                        
+				
+			<h1 data-dojo-type="dojox.mobile.Heading" data-dojo-props='fixed:"bottom"' >
+				<!--<img src="Style/logo_dsi.jpg" style="height: 42px;">
+				<span>© 2013 DSI - Tous droits réservés </span>-->
+				
+				<span id="offline" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"Offline",defaultColor:"mblColorTurquoise",toggle:"true"' onclick="offline();"></span>
+				<span  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"?",defaultColor:"mblColorTurquoise",toggle:"true"' onclick="dijit.byId('help').show()"></span>
+				<span data-dojo-type="dojox/mobile/ToolBarButton"
+					data-dojo-props='label:"Download",defaultColor:"mblColorTurquoise"'
+					style="float:right;"
+					onclick="install();"
+					></span>
+				
+			</h1>
+		
+	</body>
+</html>
+

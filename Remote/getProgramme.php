@@ -3,7 +3,7 @@
 	$chemin ="../";
 	require_once($chemin."init.php");
 	
-	$var["day"]	= 1;
+	$var["day"]	= 2;
 	//$var["chaine"]	= array(1,2);
 	$var["bouquet"]	= "TNT";
 	

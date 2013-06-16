@@ -132,7 +132,11 @@ background-color: white !important;
 color:black !important;
 
 }
-
+.dojoxCalendarEvent{
+    
+    font-size:80% !important;
+    overflow:hidden !important;
+}
 
 
 .dojoxCalendarEvent.Calendar1 .bg {
@@ -157,5 +161,11 @@ color:black !important;
 
 .photopopup{
     width:200px;
+    
+}
+.Hovered{
+    
+    z-index: 1000 !important;
+    width:120px !important;
     
 }

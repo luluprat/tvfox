@@ -1,8 +1,10 @@
 require([
+    "dojo/request/xhr",
     "dojo/dom-construct",
     "dojo/_base/window",
     "dojo/_base/array",
-    "dojox/mobile/parser", 
+    "dojox/mobile/parser",
+    
     "storehouse/Storehouse",
     "dojo/_base/lang",
     "dojo/on",
@@ -12,9 +14,10 @@ require([
     "storehouse/engines/cookie",
     "storehouse/engines/indexeddb",
     "storehouse/engines/localstorage",
+    "dojo/store/util/SimpleQueryEngine",
+    
     "dojox/mobile", 
     "dojox/mobile/compat",
-
     "dojox/mobile/RoundRectList", 
     "dojox/mobile/RoundRect", 
     "dojox/mobile/TextBox", 
@@ -27,6 +30,11 @@ require([
     "dojox/mobile/ScrollableView",
     "dojox/mobile/ListItem",
     "dojox/mobile/Button",
+    "dojox/mobile/SimpleDialog",
+    "dojox/mobile/Heading",
+    "dojox/mobile/ProgressBar",
+     
+    
     "dijit/form/Form",
     "dijit/dijit", 
     "dojo",
@@ -36,20 +44,18 @@ require([
     "dojo/store/Observable",
 
     "dojo/ready",
-    "dojo/store/util/SimpleQueryEngine",
-    "dojox/mobile/SimpleDialog",
-    "dojox/mobile/Heading",
-    "dojox/mobile/ProgressBar",
+    
+   
     
     
-
+    "dojox/calendar/Calendar",
     "dojox/calendar/MobileCalendar",
     "dojox/calendar/Calendar",
     "dojox/calendar/ColumnView"
     
 	],
 
-function(dom,win,array,parser,Storehouse) {
+function(request,dom,win,array,parser,Storehouse) {
 	
 	
 	
@@ -63,19 +69,24 @@ function(dom,win,array,parser,Storehouse) {
 		storeId: 'chaine',
 		idProperty: 'id_chaine'
 	  }); 
-	var dialog =  dijit.byId("dialog");
+	
         
         var calendar;
+        
+        
+        
+       
 	
         speed_diffusion.open().then(function(){
             
-            calendar = new dojox.calendar.Calendar({
+            calendar = new dojox.calendar.MobileCalendar({
                 dateInterval: "day",
                 selectionMode:"single",
               
                 query:function(item){
-                    // var bool = (item.ordre =="1");
-                    var bool = true;
+                     var bool = (parseInt(item.ordre) <10);
+                   // console.log(item);
+                    //var bool = true;
                     return bool;
                 },
                 cssClassFunc: function(item){ return 'Calendar'+item.ordre;},
@@ -84,28 +95,34 @@ function(dom,win,array,parser,Storehouse) {
                 },
                 columnViewProps:{
                     startDate:new Date(),
-                    horizontalGap:10,
+                    horizontalGap:4,
                     percentOverlap:0,
                     timeSlotDuration:60,
-                    hourSize:200,
+                    hourSize:120,
                     minHours:0,
                     maxHours:24,
                     layoutPriorityFunction:function (item,suivant){
-                
-                    console.log("item",item._item,suivant._item);
-                    return (item._item.ordre<suivant._item.ordre);
+                        var ordre = (item._item.ordre > suivant._item.ordre);
+                        var date = (item._item.startDate > suivant._item.startDate);
+                         var duree = (item._item.duree > suivant._item.duree);
+                 
+                        //console.log("item",item._item,suivant._item);
+                    return (ordre || duree || date);
                     }
                 },
                 store: new dojo.store.Observable(speed_diffusion),
-                style: "position:relative;width:100%;height:800px"
+                style: "position:relative;width:100%;height:400px"
             }, "chart");
           
           
           
 
             calendar.on("itemClick", function(e){
+                
+           
                     var debut =  dojo.date.locale.format(new Date(e.item.startTime),{selector:"time", timePattern: "HH:mm" });
                     var fin =  dojo.date.locale.format(new Date(e.item.endTime),{selector:"time", timePattern: "HH:mm" });
+                    
                     var dlg = new dojox.mobile.SimpleDialog({closeButton:true,closeButtonClass:	"mblDomButtonSilverCircleRedCross"});
                     win.body().appendChild(dlg.domNode);
                     
@@ -113,6 +130,7 @@ function(dom,win,array,parser,Storehouse) {
                     if(typeof e.item.texte == "string") texte +=  "<br>" +  e.item.texte;
                     texte +=  "<br> de  : " +  debut;
                     texte +=  '<br> à  : ' +  fin;
+                    texte +=  '<br> chaine  : ' + e.item.chaine_nom ;
                     if(e.item.photo != '')texte +=  "<br>" + "<img class=\"photopopup\" src=\"/Data/Images/"+e.item.photo +" \">";
                     
                    dom.create("div",{
@@ -134,26 +152,89 @@ function(dom,win,array,parser,Storehouse) {
        });  
     
     install = function(){
-		
-            var debut = new Date();
-		
-            dojo.xhrPost({
-                handleAs:"json",
-                preventCache:true,
-                url:"Remote/getProgramme.php",
-                sync : false,
-                load :dojo.hitch(this,function(response,ioArgs){
-                    speed_diffusion.open().then(function(){
-                        speed_diffusion.applyData(response).then(function(res){
+	 
+        var dlg = new dojox.mobile.SimpleDialog({closeButton:true,closeButtonClass:	"mblDomButtonSilverCircleRedCross"});
+        
+        win.body().appendChild(dlg.domNode);
+
+       
+       dom.create("div",{
+           class: "mblSimpleDialogText",
+           innerHTML: "Progression"
+       },dlg.domNode);
+        var pb = new dojox.mobile.ProgressBar({});
+        pb.placeAt(dlg.domNode);
+
+       var cancelBtn = new dojox.mobile.Button({
+            class: "mblSimpleDialogButton mblRedButton",
+            innerHTML: "Close"});
+       cancelBtn.connect(cancelBtn.domNode, "click",
+             function(e){dlg.hide();});
+       cancelBtn.placeAt(dlg.domNode);
+
+       dlg.show();
+       
+         var debut = new Date();
+	 request("Remote/getProgramme.php", {
+            handleAs: "json",
+            preventCache:true
+          }).then(function(data){
+             speed_diffusion.open().then(function(){
+                 var all = data.length;
+                 pb.set("maximum",all);
+                 var count = 0;
+                 
+                 array.forEach(data, function(entry, i){
+                     
+                     
+                     
+                     if(!speed_diffusion.get(entry.id)){
+                        speed_diffusion.add(entry).then(function(){
+                            if(Math.floor(count/10) == count/10  )pb.set("value",count.toString());
+
+
+                            var fin_prog = new Date();
+                             count++;
+                             var duree = dojo.date.difference(debut,fin_prog,"second");
+                          
+                             if(count==all){
+                                console.log( duree); 
+                                dlg.hide();
+                              }
+                      });
+                     }else{
+                         pb.set("value",count.toString());
+                         var fin_prog = new Date();
+                         count++;
+                        var duree = dojo.date.difference(debut,fin_prog,"second");
+                        console.log( duree);
+                        if(count==all){
+                           console.log( duree); 
+                           dlg.hide();
+                         }
+                     }
+                        
+                           
+                            
+                      //
+                        });
+                        /**
+                        speed_diffusion.applyData(data).then(function(res){
                             var fin_prog = new Date();
                             var duree = dojo.date.difference(debut,fin_prog,"second");
                             console.log( duree,"fin prog");
                          });
-
+                         */
                           
                     });
-                })
-            });	
+          }, function(err){
+            // Handle the error condition
+          }, function(evt){
+              console.log(evt);
+            // Handle a progress event from the request if the
+            // browser supports XHR2
+          });
+           
 		
             dojo.xhrPost({
                 handleAs:"json",
@@ -182,5 +263,5 @@ function(dom,win,array,parser,Storehouse) {
          };
          
        
-	
+	console.log(calendar);
 });

@@ -3,7 +3,7 @@
 	
         $conf = require_once("Config/config.php");
         define(APPLICATION_PATH,$conf["APPLICATION_PATH"]);
-
+        define(DATABASE,$conf["DATABASE"]);
 	$config = array(
 		//'Zend\Loader\ClassMapAutoloader' => array(
 			//'application' => APPLICATION_PATH . '/.classmap.php',

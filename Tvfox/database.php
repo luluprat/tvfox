@@ -11,7 +11,7 @@ class database {
 	
 		$adapter = new Zend\Db\Adapter\Adapter(array(
 			'driver' => 'Pdo_Sqlite',
-			'database' => APPLICATION_PATH .'/Data/full_index.sqlite'
+			'database' => DATABASE
 		 ));
 		$this->DB = $adapter;
 	}
@@ -20,7 +20,7 @@ class database {
 	
 		$chaine = $var["chaine"];
 		$bouquet = $var["bouquet"];
-                if(isset($var["chaine"]))$chaine=$var["chaine"];
+                if(isset($var["day"]))$day=$var["day"];
 		
 		$sql = new Zend\Db\Sql\Sql($this->DB);
 		$select = $sql->select();
@@ -54,11 +54,11 @@ class database {
 			'e.id_texte = t.id_texte',
 			array('texte')
 		);
-                if(isset($chaine)){
-                        $Exp = new Zend\Db\Sql\Expression("date('now','+".$days." days')");
+                if(isset($day)){
+                        $Exp = new Zend\Db\Sql\Expression("date('now','+".$day." days')");
                         $select->where->lessThan("date_diffusion",$Exp);
                 }
-                $Exp = new Zend\Db\Sql\Expression("date('now','-1 days')");
+                $Exp = new Zend\Db\Sql\Expression("date('now')");
                 $select->where->greaterThan("date_diffusion",$Exp);
 		if(isset($chaine) && is_array($chaine)) $select->where->in('c.id_chaine',$chaine);
 		if(isset($bouquet))  $select->where->like('b.nom',"".$bouquet."");

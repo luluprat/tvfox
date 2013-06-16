@@ -24,11 +24,13 @@ class database {
 		
 		$sql = new Zend\Db\Sql\Sql($this->DB);
 		$select = $sql->select();
-                $Exp = new Zend\Db\Sql\Expression("datetime(date_diffusion,'+'||duree_diffusion||' minutes')");
+                // yyyy-MM-ddTHH:mm:ss.SSS
+                $Exp_start = new Zend\Db\Sql\Expression("strftime('%Y-%m-%dT%H:%M:%f', date_diffusion)");
+                $Exp_end = new Zend\Db\Sql\Expression("strftime('%Y-%m-%dT%H:%M:%f',datetime(date_diffusion,'+'||duree_diffusion||' minutes'))");
                 $Exp_editable = new Zend\Db\Sql\Expression("'true'");
                 
 		$select->from(array('sd'=>'speed_diffusion'));
-		$select->columns(array('id'=>'id_diffusion','startTime'=>'date_diffusion', 'duree_diffusion','endTime'=> $Exp,'summary'=> 'titre_diffusion','editable'=>$Exp_editable));
+		$select->columns(array('id'=>'id_diffusion','startTime'=>$Exp_start, 'duree_diffusion','endTime'=> $Exp_end,'summary'=> 'titre_diffusion','editable'=>$Exp_editable));
 		$select->join(
 			array('c'=>'chaine'),
 			'sd.id_chaine = c.id_chaine',

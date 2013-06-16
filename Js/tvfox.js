@@ -11,6 +11,9 @@ require([
     "dojo/ready",
     "dojox/mobile/deviceTheme",
     "dojo/sniff",
+    
+    "dojo/window",
+    
     "storehouse/engines/cookie",
     "storehouse/engines/indexeddb",
     "storehouse/engines/localstorage",
@@ -65,6 +68,7 @@ function(request,dom,win,array,parser,Storehouse) {
 		storeId: 'speed_diffusion',
 		idProperty: 'id'
 	  });
+        var storeProg = new dojo.store.Observable(speed_diffusion);
 	var chaine = new Storehouse({
 		storeId: 'chaine',
 		idProperty: 'id_chaine'
@@ -84,14 +88,15 @@ function(request,dom,win,array,parser,Storehouse) {
                 selectionMode:"single",
               
                 query:function(item){
-                     var bool = (parseInt(item.ordre) <10);
+                     var bool = (parseInt(item.ordre) < 10);
                    // console.log(item);
                     //var bool = true;
                     return bool;
                 },
                 cssClassFunc: function(item){ return 'Calendar'+item.ordre;},
                 decodeDate: function(s){
-                    return new Date(s);
+                    //console.log(s,dojo.date.locale.parse(s,{datePattern:"yyyy-mm-ddTh:m:s"}),new Date((s)),dojo.date.stamp.fromISOString(s));
+                    return  new dojo.date.stamp.fromISOString(s);
                 },
                 columnViewProps:{
                     startDate:new Date(),
@@ -108,9 +113,15 @@ function(request,dom,win,array,parser,Storehouse) {
                  
                         //console.log("item",item._item,suivant._item);
                     return (ordre || duree || date);
-                    }
+                    },
+                    /**
+                    startTimeOfDay:{
+                        hours:21,
+                       duration:1000
+                     }
+                    */
                 },
-                store: new dojo.store.Observable(speed_diffusion),
+                store: storeProg,
                 style: "position:relative;width:100%;height:400px"
             }, "chart");
           
@@ -119,29 +130,40 @@ function(request,dom,win,array,parser,Storehouse) {
 
             calendar.on("itemClick", function(e){
                 
-           
+                    var vs = dojo.window.getBox();
+                    
+                    var width = vs.w -100;
+                    console.log(width);
                     var debut =  dojo.date.locale.format(new Date(e.item.startTime),{selector:"time", timePattern: "HH:mm" });
                     var fin =  dojo.date.locale.format(new Date(e.item.endTime),{selector:"time", timePattern: "HH:mm" });
+                   
+                    var dlg = new dojox.mobile.SimpleDialog({
+                        closeButton:true,
+                        closeButtonClass:"mblDomButtonSilverCircleRedCross",
+                        style:'width:'+width +'px;'
+                    });
+                    console.log(dlg);
                     
-                    var dlg = new dojox.mobile.SimpleDialog({closeButton:true,closeButtonClass:	"mblDomButtonSilverCircleRedCross"});
                     win.body().appendChild(dlg.domNode);
                     
                     var texte = e.item.summary;
                     if(typeof e.item.texte == "string") texte +=  "<br>" +  e.item.texte;
                     texte +=  "<br> de  : " +  debut;
-                    texte +=  '<br> à  : ' +  fin;
+                    texte +=  ' à  : ' +  fin;
                     texte +=  '<br> chaine  : ' + e.item.chaine_nom ;
                     if(e.item.photo != '')texte +=  "<br>" + "<img class=\"photopopup\" src=\"/Data/Images/"+e.item.photo +" \">";
                     
                    dom.create("div",{
                        class: "mblSimpleDialogText",
-                       innerHTML: texte
+                       innerHTML: texte,
+                       style:'width:'+width +'px;'
                    },dlg.domNode);
                    
-                   
+                   //dojo.query(".mblSimpleDialogText").style("width", width);
                    var cancelBtn = new dojox.mobile.Button({
                         class: "mblSimpleDialogButton mblRedButton",
-                        innerHTML: "Close"});
+                        innerHTML: "Close"
+                    });
                    cancelBtn.connect(cancelBtn.domNode, "click",
                          function(e){dlg.hide();});
                    cancelBtn.placeAt(dlg.domNode);
@@ -189,7 +211,7 @@ function(request,dom,win,array,parser,Storehouse) {
                      
                      
                      if(!speed_diffusion.get(entry.id)){
-                        speed_diffusion.add(entry).then(function(){
+                       storeProg.add(entry).then(function(){
                             if(Math.floor(count/10) == count/10  )pb.set("value",count.toString());
 
 
@@ -207,10 +229,11 @@ function(request,dom,win,array,parser,Storehouse) {
                          var fin_prog = new Date();
                          count++;
                         var duree = dojo.date.difference(debut,fin_prog,"second");
-                        console.log( duree);
+                       
                         if(count==all){
-                           console.log( duree); 
+                            
                            dlg.hide();
+                          
                          }
                      }
                         

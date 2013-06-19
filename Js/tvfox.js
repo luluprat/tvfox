@@ -4,10 +4,12 @@ require([
     "dojo/_base/window",
     "dojo/_base/array",
     "dojox/mobile/parser",
+    "dojo/_base/declare",
     
     "storehouse/Storehouse",
-    "dojo/_base/lang",
+    "dojo/_base/fx",
     "dojo/on",
+    "dojo/_base/lang",
     "dojo/ready",
     "dojox/mobile/deviceTheme",
     "dojo/sniff",
@@ -47,23 +49,36 @@ require([
     "dojo/store/Observable",
 
     "dojo/ready",
-    
+    "dijit/form/NumberSpinner",
+    "dijit/TitlePane",
    
     
     
     "dojox/calendar/Calendar",
     "dojox/calendar/MobileCalendar",
     "dojox/calendar/Calendar",
-    "dojox/calendar/ColumnView"
+    "dojox/calendar/SimpleColumnView",
+    "dojox/calendar/ColumnView",
+    
+    "dojox/calendar/ColumnViewSecondarySheet",
+    "dojox/calendar/Touch",
+    "dojox/calendar/Mouse",
+    "dojox/calendar/MobileVerticalRenderer",
+    "dojox/calendar/HorizontalRenderer",
+    "dojox/calendar/ExpandRenderer"
+    
     
 	],
 
-function(request,dom,win,array,parser,Storehouse) {
+function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
 	
 	
 	
 	parser.parse();
 	
+        var webappButton = dijit.byId("webappButton");
+        var webapp = dijit.byId('webapp');
+        
 	var speed_diffusion = new Storehouse({
 		storeId: 'speed_diffusion',
 		idProperty: 'id'
@@ -75,18 +90,19 @@ function(request,dom,win,array,parser,Storehouse) {
 	  }); 
 	
         
-        var calendar;
-        
+        var colView;
         
         
        
 	
         speed_diffusion.open().then(function(){
             
+            
+            /**
             calendar = new dojox.calendar.MobileCalendar({
                 dateInterval: "day",
                 selectionMode:"single",
-              
+                views:dojox.calendar.SimpleColumnView,
                 query:function(item){
                      var bool = (parseInt(item.ordre) < 10);
                    // console.log(item);
@@ -109,31 +125,70 @@ function(request,dom,win,array,parser,Storehouse) {
                     layoutPriorityFunction:function (item,suivant){
                         var ordre = (item._item.ordre > suivant._item.ordre);
                         var date = (item._item.startDate > suivant._item.startDate);
-                         var duree = (item._item.duree > suivant._item.duree);
+                        var duree = (item._item.duree > suivant._item.duree);
                  
                         //console.log("item",item._item,suivant._item);
-                    return (ordre || duree || date);
+                    return (ordre );
                     },
-                    /**
+                    
                     startTimeOfDay:{
                         hours:21,
                        duration:1000
                      }
-                    */
+                    
                 },
                 store: storeProg,
                 style: "position:relative;width:100%;height:400px"
             }, "chart");
-          
-          
-          
-
-            calendar.on("itemClick", function(e){
+            
+          */
+            colView = declare([dojox.calendar.ColumnView, dojox.calendar.Touch,dojox.calendar.Mouse])({
+                   // secondarySheetClass: secondarySheetClass,
+                   title:"TvFox",
+                    store: storeProg,
+                     query:function(item){
+                        var bool = (parseInt(item.ordre) < 10);
+                      // console.log(item);
+                       //var bool = true;
+                       return bool;
+                   },
+                    layoutPriorityFunction:function (item,suivant){
+                        var ordre = (item._item.ordre > suivant._item.ordre);
+                        var date = (item._item.startDate > suivant._item.startDate);
+                        var duree = (item._item.duree > suivant._item.duree);
+                 
+                        //console.log("item",item._item,suivant._item);
+                    return (ordre );
+                    },
+                    summaryAttr:"summary",
+                    cssClassFunc: function(item){ return 'Calendar'+item.ordre;},
+                    verticalRenderer: dojox.calendar.MobileVerticalRenderer,
+                   // horizontalRenderer: HorizontalRenderer,
+                    expandRenderer: dojox.calendar.ExpandRenderer,
+                    columnCount: 1,
+                    hourSize: 120,
+                    minHours:1,
+                    maxHours: 24,
+                    startDate:new Date(),
+                    horizontalGap:4,
+                    percentOverlap:0,
+                    timeSlotDuration:60
+                   
+            }, "chart");
+            colView.startup();
+            /*
+            colView.set("startTimeOfDay",{
+                        hours:10,
+                       duration:1000
+                     });
+            */
+            
+            colView.on("itemClick", function(e){
                 
                     var vs = dojo.window.getBox();
                     
                     var width = vs.w -100;
-                    console.log(width);
+                    
                     var debut =  dojo.date.locale.format(new Date(e.item.startTime),{selector:"time", timePattern: "HH:mm" });
                     var fin =  dojo.date.locale.format(new Date(e.item.endTime),{selector:"time", timePattern: "HH:mm" });
                    
@@ -147,10 +202,12 @@ function(request,dom,win,array,parser,Storehouse) {
                     win.body().appendChild(dlg.domNode);
                     
                     var texte = e.item.summary;
-                    if(typeof e.item.texte == "string") texte +=  "<br>" +  e.item.texte;
-                    texte +=  "<br> de  : " +  debut;
+                    texte +=  "<br>" + "<img  src=\"/Style/logos/logo"+e.item.ordre +".gif\">";
+                    texte +=  " de  : " +  debut;
                     texte +=  ' à  : ' +  fin;
-                    texte +=  '<br> chaine  : ' + e.item.chaine_nom ;
+                    if(typeof e.item.texte == "string") texte +=  "<br>" +  e.item.texte;
+                   
+                    
                     if(e.item.photo != '')texte +=  "<br>" + "<img class=\"photopopup\" src=\"/Data/Images/"+e.item.photo +" \">";
                     
                    dom.create("div",{
@@ -171,9 +228,16 @@ function(request,dom,win,array,parser,Storehouse) {
                    dlg.show();
                    //piIns.start();
              });
+             fx.fadeOut({
+                node:"loadingPanel", 
+                onEnd: function(node){
+                        node.parentNode.removeChild(node)
+             }}).play(500);
+                
+           
        });  
     
-    install = function(){
+        install = function(){
 	 
         var dlg = new dojox.mobile.SimpleDialog({closeButton:true,closeButtonClass:	"mblDomButtonSilverCircleRedCross"});
         
@@ -211,7 +275,7 @@ function(request,dom,win,array,parser,Storehouse) {
                      
                      
                      if(!speed_diffusion.get(entry.id)){
-                       storeProg.add(entry).then(function(){
+                       speed_diffusion.add(entry).then(function(){
                             if(Math.floor(count/10) == count/10  )pb.set("value",count.toString());
 
 
@@ -233,6 +297,7 @@ function(request,dom,win,array,parser,Storehouse) {
                         if(count==all){
                             
                            dlg.hide();
+                          
                           
                          }
                      }
@@ -279,12 +344,55 @@ function(request,dom,win,array,parser,Storehouse) {
             });	
 	};
 	
-	drawCalendar = function(){
-
-           calendar.refreshRendering();
-           console.log("refresh");
+	refresh = function(){
+            window.location.reload(false);
+           
          };
+        now = function(){
+
+           var H = dojo.date.locale.format(new Date(),{selector:"time", timePattern: "H" });
+           colView.set('startTimeOfDay', {hours: parseInt(H), duration: 250});
+           var T = new Date();
+           colView.set("startDate",T);
+         };
+        tommorow = function(){
+             var T = dojo.date.add(new Date(), "day", 1);
+             colView.set("startDate",T);
+         }
          
+        on(webappButton, "click", function(e) {
+
+		e.preventDefault();
+		// define the manifest URL
+		var manifest_url = "http://tvfox.org/manifest.webapp";
+		// install the app
+		//alert(manifest_url );
+		
+		if(navigator.mozApps){
+			
+			var myapp = navigator.mozApps.install(manifest_url);
+			myapp.onsuccess = function(data) {
+			  // App is installed, remove button
+                            alert(data);
+			
+			  //this.parentNode.removeChild(this);
+			  webapp.hide();
+			};
+			myapp.onerror = function(e) {
+			  // App wasn't installed, info is in
+			  // 
+			 webapp.hide();
+			  alert('Install failed, error: ' + this.error.name);
+                          
+			 };
+		}else{
+                    
+                        webapp.hide();
+                    alert('No support');
+                    
+                    
+                }
+	});
        
-	console.log(calendar);
+	
 });

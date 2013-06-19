@@ -20,6 +20,7 @@ class database {
 	
 		$chaine = $var["chaine"];
 		$bouquet = $var["bouquet"];
+                if(isset($var["ordre"]))$ordre=$var["ordre"];
                 if(isset($var["day"]))$day=$var["day"];
 		
 		$sql = new Zend\Db\Sql\Sql($this->DB);
@@ -64,6 +65,7 @@ class database {
                 $select->where->greaterThan("date_diffusion",$Exp);
 		if(isset($chaine) && is_array($chaine)) $select->where->in('c.id_chaine',$chaine);
 		if(isset($bouquet))  $select->where->like('b.nom',"".$bouquet."");
+                if(isset($ordre))  $select->where->lessThan('bc.ordre',"".$ordre."");
 		
                 
                 $select->order(array("ordre"));
@@ -134,14 +136,27 @@ class database {
             $results = $statement->execute();
             
             $photo = new photo();
-
+            
             foreach($results as $key => $value){
-                
-                    
+                    ob_start();
                     $url =  $value["photo"];
+                    echo $url;
+                    $buf = ob_get_clean();
+
+                    echo $buf;
+                    echo memory_get_usage()."\n";
+                    
+                    
                     $photo->getPhoto($url);
+                    
+                   
             }
-            return json_encode($r);
+            
+            $message = array(
+                    "message"=>"recuperation ok",
+                    "type"=>"message",
+                    "duration"=>200);
+            return json_encode($message);
 
         
         

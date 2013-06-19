@@ -30,7 +30,8 @@ class compress {
 		// copy file
 		$zip = APPLICATION_PATH .'/Data/file.zip';
 		copy($response->getStreamName(), $zip);
-		
+		$time = filectime($zip);
+                $timeD = filectime(DATABASE);
 		
 		if ($response->isSuccess()) {
 			//  the POST was successful
@@ -45,20 +46,24 @@ class compress {
 			));
 			
 			$decompressed = $filter->filter($zip);
-		}
+                        $message = array(
+                            "message"=>"recuperation ok ". date("d m Y H:i:s.", $time)." et ". date("d m  Y H:i:s.", $timeD),
+                            "type"=>"message",
+                            "duration"=>200);
+		}else{
+                    
+                    $message = array(
+                    "message"=>"Probleme recuperation",
+                    "type"=>"warning",
+                    "duration"=>0);
+                }
 		
 		
 		
-		return $decompressed ;
+		return json_encode($message) ;
 	}
 	
-	function toJson(){
-		
-		$xml = file_get_contents(APPLICATION_PATH . "/Data/".self::ZIP.".xml");
-		
-		$jsonContents = Zend\Json\Json::fromXml($xml,false);
-		return $jsonContents;
-	}
+	
 	
 	
 	

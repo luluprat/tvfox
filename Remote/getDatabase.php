@@ -5,5 +5,6 @@
 	
 	
 	$c = new Tvfox\compress();
-	$c->deCompress();
+	$message = $c->deCompress();
+        echo($message);
 ?>

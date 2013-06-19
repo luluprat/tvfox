@@ -1,9 +1,9 @@
 {
-  "name": "XmlTv",
-  "description": "Programme Télé pour firefox os",
-  "launch_path": "index.html",
+  "name": "TvFox",
+  "description": "Programme Tv pour firefox os",
+  "launch_path": "/index.html",
   "icons": {
-    "128": "/Style/logo.png"
+    "128": "/Style/tvfox.png"
   },
   "developer": {
     "name": "Lucile Coutouly",
@@ -11,5 +11,5 @@
   },
   "installs_allowed_from": ["*"],
   "default_locale": "fr",
-  "appcache_path": "/xmltv.manifest"
+  "appcache_path": "/tvfox.manifest"
 }

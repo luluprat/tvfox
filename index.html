@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- <html manifest="xmltv.manifest"> -->
+<html manifest="tvfox.manifest">
 
 	<head>
             <meta charset="UTF-8">
@@ -11,7 +11,7 @@
                 <link rel="shortcut icon" type="image/png" href="favicon.png" />
 		<!-- configure and load dojo -->
 		<script 
-			src="Library/Dojo/dojo/dojo.js" 
+			src="Library/release/dojo/dojo.js" 
 			data-dojo-config="
 			isDebug:1, 
 			async:1,
@@ -40,27 +40,36 @@
 
 
 		
+			<div id="loadingPanel" style="position:absolute;z-index:10;width:100%;height:100%;background:#ffffff">
+				<span style="background: #DBEB8F;padding:2px">Loading...</span>
+			</div>
+                      
 			
-			<!--<div id="resultList" data-dojo-type="dojox.mobile.ScrollableView" data-dojo-props='scrollBar:true'>-->
-				
-					<div id="chart"></div>
-				
-				
-			<!--</div>-->
-                        
+                        <div id="chart"></div>
 			<h1 data-dojo-type="dojox.mobile.Heading" data-dojo-props='fixed:"bottom"' >
-				<!--<img src="Style/logo_dsi.jpg" style="height: 42px;">
-				<span>© 2013 DSI - Tous droits réservés </span>-->
 				
-				<span id="offline" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"Offline",defaultColor:"mblColorTurquoise",toggle:"true"' onclick="offline();"></span>
-				<span  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"?",defaultColor:"mblColorTurquoise",toggle:"true"' onclick="dijit.byId('help').show()"></span>
-				<span data-dojo-type="dojox/mobile/ToolBarButton"
-					data-dojo-props='label:"Download",defaultColor:"mblColorTurquoise"'
-					style="float:right;"
-					onclick="install();"
-					></span>
+                            <span  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"Now",defaultColor:"mblColorTurquoise"' onclick="now();"></span>
+                            <span  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"Tommorow",defaultColor:"mblColorTurquoise"' onclick="tommorow();"></span>
+                            <span  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"Refresh",defaultColor:"mblColorTurquoise"' onclick="refresh()"></span>
+                            <span  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"webapp",defaultColor:"mblColorTurquoise"' onclick="dijit.byId('webapp').show()"></span>
+                            <span data-dojo-type="dojox/mobile/ToolBarButton"
+                                    data-dojo-props='label:"Download",defaultColor:"mblColorTurquoise"'
+                                    style="float:right;"
+                                    onclick="install();"
+                                    ></span>
 				
 			</h1>
+                        <div id="webapp" data-dojo-type="dojox/mobile/SimpleDialog" data-dojo-props='closeButton:true'> 
+                            <div data-dojo-type="dojox/mobile/RoundRect" data-dojo-props='shadow:true'>
+                                    <span> Pour installer l'application sur firefox os cliquez sur le bouton</span>
+                                    <span id="webappButton" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='label:"webapp",defaultColor:"mblColorTurquoise"'  style=""></span>
+
+                            </div>
+                            <!--<div data-dojo-type="dojox/mobile/Button" label="Fermer" class="mblColorTurquoise" style="width:45px;float:right;" onClick="dijit.byId('help').hide()"></div>-->
+		  
+		 
+		  
+                        </div>
 		
 	</body>
 </html>

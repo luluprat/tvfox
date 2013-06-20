@@ -33,12 +33,14 @@ require([
     "dojox/mobile/RoundRectCategory",
     "dojox/mobile/Accordion",
     "dojox/mobile/ScrollableView",
+    "dojox/mobile/SwapView",
+    "dojox/mobile/View",
     "dojox/mobile/ListItem",
     "dojox/mobile/Button",
     "dojox/mobile/SimpleDialog",
     "dojox/mobile/Heading",
     "dojox/mobile/ProgressBar",
-     
+    "dojox/mobile/PageIndicator",
     
     "dijit/form/Form",
     "dijit/dijit", 
@@ -90,68 +92,26 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
 	  }); 
 	
         
-        var colView;
+        var colView = Array();
         
         
        
-	
-        speed_diffusion.open().then(function(){
-            
-            
-            /**
-            calendar = new dojox.calendar.MobileCalendar({
-                dateInterval: "day",
-                selectionMode:"single",
-                views:dojox.calendar.SimpleColumnView,
-                query:function(item){
-                     var bool = (parseInt(item.ordre) < 10);
-                   // console.log(item);
-                    //var bool = true;
-                    return bool;
-                },
-                cssClassFunc: function(item){ return 'Calendar'+item.ordre;},
-                decodeDate: function(s){
-                    //console.log(s,dojo.date.locale.parse(s,{datePattern:"yyyy-mm-ddTh:m:s"}),new Date((s)),dojo.date.stamp.fromISOString(s));
-                    return  new dojo.date.stamp.fromISOString(s);
-                },
-                columnViewProps:{
-                    startDate:new Date(),
-                    horizontalGap:4,
-                    percentOverlap:0,
-                    timeSlotDuration:60,
-                    hourSize:120,
-                    minHours:0,
-                    maxHours:24,
-                    layoutPriorityFunction:function (item,suivant){
-                        var ordre = (item._item.ordre > suivant._item.ordre);
-                        var date = (item._item.startDate > suivant._item.startDate);
-                        var duree = (item._item.duree > suivant._item.duree);
-                 
-                        //console.log("item",item._item,suivant._item);
-                    return (ordre );
-                    },
-                    
-                    startTimeOfDay:{
-                        hours:21,
-                       duration:1000
-                     }
-                    
-                },
-                store: storeProg,
-                style: "position:relative;width:100%;height:400px"
-            }, "chart");
-            
-          */
-            colView = declare([dojox.calendar.ColumnView, dojox.calendar.Touch,dojox.calendar.Mouse])({
+       
+       draw = function(){
+           speed_diffusion.open().then(function(){
+         
+            //for(var n=0;n<3;n++){
+            var n=0;
+            colView[n] = declare([dojox.calendar.ColumnView, dojox.calendar.Touch,dojox.calendar.Mouse])({
                    // secondarySheetClass: secondarySheetClass,
-                   title:"TvFox",
-                    store: storeProg,
-                     query:function(item){
-                        var bool = (parseInt(item.ordre) < 10);
+                   //title:"TvFox",
+                store: storeProg,
+                query:function(item){
+                        var bool = (parseInt(item.ordre) < (n+1)*10 && parseInt(item.ordre) > (n)*3);
                       // console.log(item);
                        //var bool = true;
                        return bool;
-                   },
+                },
                     layoutPriorityFunction:function (item,suivant){
                         var ordre = (item._item.ordre > suivant._item.ordre);
                         var date = (item._item.startDate > suivant._item.startDate);
@@ -170,20 +130,14 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
                     minHours:1,
                     maxHours: 24,
                     startDate:new Date(),
-                    horizontalGap:4,
-                    percentOverlap:0,
-                    timeSlotDuration:60
+                horizontalGap:4,
+                percentOverlap:0,
+                timeSlotDuration:60
                    
-            }, "chart");
-            colView.startup();
-            /*
-            colView.set("startTimeOfDay",{
-                        hours:10,
-                       duration:1000
-                     });
-            */
+            }, "cal"+n);
             
-            colView.on("itemClick", function(e){
+            
+            colView[n].on("itemClick", function(e){
                 
                     var vs = dojo.window.getBox();
                     
@@ -228,14 +182,15 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
                    dlg.show();
                    //piIns.start();
              });
-             fx.fadeOut({
+             
+             
+           fx.fadeOut({
                 node:"loadingPanel", 
                 onEnd: function(node){
                         node.parentNode.removeChild(node)
              }}).play(500);
-                
-           
-       });  
+        });  
+       }
     
         install = function(){
 	 
@@ -351,13 +306,18 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
         now = function(){
 
            var H = dojo.date.locale.format(new Date(),{selector:"time", timePattern: "H" });
-           colView.set('startTimeOfDay', {hours: parseInt(H), duration: 250});
-           var T = new Date();
-           colView.set("startDate",T);
-         };
+            var T = new Date();
+           for(var n= 0;n<3;n++){
+           colView[n].set('startTimeOfDay', {hours: parseInt(H), duration: 250});
+          
+           colView[n].set("startDate",T);
+           }
+        };
         tommorow = function(){
-             var T = dojo.date.add(new Date(), "day", 1);
-             colView.set("startDate",T);
+             var T = dojo.date.add(new Date(), "day", 1); 
+             for(var n= 0;n<3;n++){
+            colView[n].set("startDate",T);
+           }
          }
          
         on(webappButton, "click", function(e) {
@@ -394,5 +354,5 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
                 }
 	});
        
-	
+	draw();
 });

@@ -97,7 +97,7 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
         
        
        
-       draw = function(){
+      // draw = function(){
            speed_diffusion.open().then(function(){
          
             //for(var n=0;n<3;n++){
@@ -143,26 +143,27 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
                     
                     var width = vs.w -100;
                     
-                    var debut =  dojo.date.locale.format(new Date(e.item.startTime),{selector:"time", timePattern: "HH:mm" });
-                    var fin =  dojo.date.locale.format(new Date(e.item.endTime),{selector:"time", timePattern: "HH:mm" });
-                   
+                    var debut =  dojo.date.locale.format(dojo.date.stamp.fromISOString(e.item.startTime),{selector:"time", timePattern: "HH:mm" , locale: "fr"});
+                    var fin =  dojo.date.locale.format(dojo.date.stamp.fromISOString(e.item.endTime),{selector:"time", timePattern: "HH:mm" });
+                    var duree = dojo.date.difference(dojo.date.stamp.fromISOString(e.item.startTime),dojo.date.stamp.fromISOString(e.item.endTime),"minute");
+                    console.log(duree);
                     var dlg = new dojox.mobile.SimpleDialog({
                         closeButton:true,
                         closeButtonClass:"mblDomButtonSilverCircleRedCross",
                         style:'width:'+width +'px;'
                     });
-                    console.log(dlg);
+                    
                     
                     win.body().appendChild(dlg.domNode);
                     
-                    var texte = e.item.summary;
+                    var texte = e.item.titre_diffusion;
                     texte +=  "<br>" + "<img  src=\"/Style/logos/logo"+e.item.ordre +".gif\">";
                     texte +=  " de  : " +  debut;
                     texte +=  ' à  : ' +  fin;
                     if(typeof e.item.texte == "string") texte +=  "<br>" +  e.item.texte;
                    
                     
-                    if(e.item.photo != '')texte +=  "<br>" + "<img class=\"photopopup\" src=\"/Data/Images/"+e.item.photo +" \">";
+                    if(e.item.photo != ''&& navigator.onLine)texte +=  "<br>" + "<img class=\"photopopup\" src=\"/Data/Images/"+e.item.photo +" \">";
                     
                    dom.create("div",{
                        class: "mblSimpleDialogText",
@@ -190,9 +191,9 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
                         node.parentNode.removeChild(node)
              }}).play(500);
         });  
-       }
+      // }
     
-        install = function(){
+    install = function(){
 	 
         var dlg = new dojox.mobile.SimpleDialog({closeButton:true,closeButtonClass:	"mblDomButtonSilverCircleRedCross"});
         
@@ -307,17 +308,19 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
 
            var H = dojo.date.locale.format(new Date(),{selector:"time", timePattern: "H" });
             var T = new Date();
-           for(var n= 0;n<3;n++){
-           colView[n].set('startTimeOfDay', {hours: parseInt(H), duration: 250});
+           //for(var n= 0;n<3;n++){
+           var n=0;
+            colView[n].set('startTimeOfDay', {hours: parseInt(H), duration: 250});
           
            colView[n].set("startDate",T);
-           }
+           //}
         };
         tommorow = function(){
              var T = dojo.date.add(new Date(), "day", 1); 
-             for(var n= 0;n<3;n++){
+            var n=0; 
+            //for(var n= 0;n<3;n++){
             colView[n].set("startDate",T);
-           }
+           //}
          }
          
         on(webappButton, "click", function(e) {
@@ -333,7 +336,7 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
 			var myapp = navigator.mozApps.install(manifest_url);
 			myapp.onsuccess = function(data) {
 			  // App is installed, remove button
-                            alert(data);
+                           // alert(data);
 			
 			  //this.parentNode.removeChild(this);
 			  webapp.hide();
@@ -354,5 +357,5 @@ function(request,dom,win,array,parser,declare,Storehouse,fx,on) {
                 }
 	});
        
-	draw();
+	//draw();
 });

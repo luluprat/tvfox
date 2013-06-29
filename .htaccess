@@ -1,7 +1,6 @@
-AddType application/x-httpd-php .appcache
-AddType application/x-httpd-php .manifest
+AddType text/cache-manifest .manifest
 AddType application/x-web-app-manifest+json .webapp
 AddHandler x-web-app-manifest+json .webapp
-AddHandler x-httpd-php .manifest
+AddHandler cache-manifest .manifest
 SetEnv PHP_VER 5_3
 AddDefaultCharset UTF-8

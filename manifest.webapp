@@ -10,6 +10,6 @@
     "url": "http://tvfox.org"
   },
   "installs_allowed_from": ["*"],
-  "default_locale": "fr",
+  "default_locale": "en",
   "appcache_path": "/tvfox.manifest"
 }

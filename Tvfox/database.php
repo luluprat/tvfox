@@ -29,9 +29,24 @@ class database {
                 $Exp_start = new Zend\Db\Sql\Expression("strftime('%Y-%m-%dT%H:%M:%f', date_diffusion)");
                 $Exp_end = new Zend\Db\Sql\Expression("strftime('%Y-%m-%dT%H:%M:%f',datetime(date_diffusion,'+'||duree_diffusion||' minutes'))");
                 $Exp_editable = new Zend\Db\Sql\Expression("'false'");
-                
+                $Exp_summary = new Zend\Db\Sql\Expression("CASE WHEN duree_diffusion > 30  THEN  titre_diffusion  
+                    WHEN duree_diffusion > 15  THEN SUBSTR(titre_diffusion,1,10)      
+                    WHEN duree_diffusion <= 15  THEN  '' END");
+                /**
+                 * CASE WHEN duree_diffusion > 30  THEN  titre_diffusion
+                 *      WHEN duree_diffusion > 15  THEN SUBSTR(titre_diffusion,1,6)
+                 *      WHEN duree_diffusion <= 15  THEN  ''
+                    END 
+                 */
 		$select->from(array('sd'=>'speed_diffusion'));
-		$select->columns(array('id'=>'id_diffusion','startTime'=>$Exp_start, 'duree_diffusion','endTime'=> $Exp_end,'summary'=> 'titre_diffusion','editable'=>$Exp_editable));
+		$select->columns(array(
+                    'id'=>'id_diffusion',
+                    'startTime'=>$Exp_start,
+                    'duree_diffusion',
+                    'endTime'=> $Exp_end,
+                    'summary'=> $Exp_summary,
+                    'titre_diffusion'=>'titre_diffusion',
+                    'editable'=>$Exp_editable));
 		$select->join(
 			array('c'=>'chaine'),
 			'sd.id_chaine = c.id_chaine',
